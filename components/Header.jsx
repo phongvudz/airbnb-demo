@@ -1,14 +1,54 @@
 import React from "react";
 import Image from "next/image";
+import { useState } from "react";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { DateRangePicker } from "react-date-range";
+import { useRouter } from "next/dist/client/router";
 
-const Header = () => {
+const Header = ({ placeholder }) => {
+  const [searchInput, setSearchInput] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [noOfGuests, setNoOfGuests] = useState(1);
+  const [openSearch, setOpenSearch] = useState(false);
+  const router = useRouter();
+
+  const handleSelect = (ranges) => {
+    setStartDate(ranges.selection.startDate);
+    setEndDate(ranges.selection.endDate);
+  };
+  const resetInput = () => {
+    setSearchInput("");
+  };
+  const search = () => {
+    router.push({
+      pathname: "/search",
+      query: {
+        location: searchInput,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        noOfGuests: noOfGuests,
+      },
+    });
+  };
+
+  const selectionRange = {
+    startDate: startDate,
+    endDate: endDate,
+    key: "selection",
+  };
+
   return (
     <header
       className="sticky top-0 z-50  grid grid-cols-3 bg-white shadow-md
          p-5 md:px-10"
     >
       {/*Left*/}
-      <div className="relative flex items-center h-10 cursor-pointer my-auto">
+      <div
+        onClick={() => router.push("/")}
+        className="relative flex items-center h-10 cursor-pointer my-auto"
+      >
         <Image
           src="https://links.papareact.com/qd3"
           layout="fill"
@@ -19,15 +59,18 @@ const Header = () => {
       {/*Middle*/}
       <div className="flex items-center md:border-2 rounded-full py-2 md:shadow-sm ">
         <input
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
           className=" flex-grow pl-5 bg-transparent outline-none text-sm
            text-gray-600 placeholder-gray-400"
           type="text"
-          placeholder="Start your search"
+          placeholder={placeholder || "Start your search"}
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
+          onClick={() => setOpenSearch(!openSearch)}
           className="h-8 bg-red-400 hidden md:inline-flex text-white rounded-full
            p-2 cursor-pointer md:mx-2"
         >
@@ -78,6 +121,42 @@ const Header = () => {
           </svg>
         </div>
       </div>
+      {(openSearch || searchInput) && (
+        <div className="flex flex-col col-span-3 mx-auto mt-10">
+          <DateRangePicker
+            rangeColors={["#FD5B61"]}
+            ranges={[selectionRange]}
+            minDate={new Date()}
+            onChange={handleSelect}
+          />
+          <div className="flex items-center border-b-2 mb-4">
+            <h1 className="flex flex-grow">Number of Guests</h1>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="w-6 h-6"
+            >
+              <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
+            </svg>
+            <input
+              type="number"
+              value={noOfGuests}
+              min={1}
+              onChange={(e) => setNoOfGuests(e.target.value)}
+              className="w-12 outline-none pl-2 text-lg text-red-400"
+            />
+          </div>
+          <div className="flex">
+            <button onClick={resetInput} className="flex-grow text-gray-500">
+              Cancel
+            </button>
+            <button className=" flex-grow text-red-400" onClick={search}>
+              Search
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
