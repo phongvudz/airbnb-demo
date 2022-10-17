@@ -1,4 +1,3 @@
-import type { NextPage } from "next";
 import Head from "next/head";
 import Header from "../components/Header";
 import SmallCard from "../components/SmallCard";
@@ -7,7 +6,7 @@ import Banner from "../components/Banner";
 import Footer from "../components/Footer";
 import LargeCard from "../components/LargeCard";
 
-const Home: NextPage = ({ exploreData, cardsData }: any) => {
+const Home = ({ exploreData, cardsData }) => {
   return (
     <div className="">
       <Head>
@@ -22,7 +21,7 @@ const Home: NextPage = ({ exploreData, cardsData }: any) => {
         <section className="pt-6">
           <h2 className="text-4xl font-semibold pb-5">Explore Nearby</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {exploreData.map((item: any) => (
+            {exploreData.map((item) => (
               <SmallCard key={item.location} {...item} />
             ))}
           </div>
@@ -31,7 +30,7 @@ const Home: NextPage = ({ exploreData, cardsData }: any) => {
         <section>
           <h2 className="text-4xl font-semibold py-8">Live Anywhere</h2>
           <div className="flex overflow-scroll space-x-3 scrollbar-hide overflow-y-hidden scroll-smooth">
-            {cardsData?.map((item: any) => (
+            {cardsData?.map((item) => (
               <MediumCard key={item} {...item} />
             ))}
           </div>

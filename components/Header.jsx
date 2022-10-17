@@ -20,6 +20,7 @@ const Header = ({ placeholder }) => {
   };
   const resetInput = () => {
     setSearchInput("");
+    setOpenSearch(false);
   };
   const search = () => {
     router.push({
